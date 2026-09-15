@@ -1,0 +1,3 @@
+Senior Mobile Engineer
+
+We are looking for an engineer with strong React Native and TypeScript experience. The role requires JavaScript, iOS and Android knowledge, Redux, REST API integration, Git, automated testing with Jest, CI/CD, and experience improving mobile performance. Kotlin or Swift experience is preferred. AWS and GraphQL are useful additions.

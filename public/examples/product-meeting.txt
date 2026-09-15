@@ -1,0 +1,3 @@
+Product sync — September 14
+
+We reviewed the onboarding drop-off and agreed to simplify the permissions screen. The team decided to move notification permission until after the first completed task. Maya will update the Figma flow by Tuesday. Omar will add the new analytics events and share a test build by Friday. We also need to verify the offline state before the next release. The team approved keeping the current navigation for this sprint. Next week we will review activation rate and notification opt-in rate.

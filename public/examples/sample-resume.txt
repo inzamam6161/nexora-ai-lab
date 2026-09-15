@@ -1,0 +1,3 @@
+Aarav Mehta — Mobile Software Engineer
+
+5+ years building production mobile applications. Strong experience with React Native, React, TypeScript, JavaScript, iOS, Swift, Android, Kotlin, Redux, REST APIs, Git, Jest, CI/CD and Firebase. Built offline-first features, push notifications, analytics integrations and release automation. Worked closely with product and design teams and reviewed code for mobile releases.

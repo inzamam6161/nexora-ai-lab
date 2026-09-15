@@ -1,0 +1,9 @@
+Nexora Mobile Launch Proposal
+
+The team proposes a six-week pilot for a mobile-first customer dashboard. The pilot will focus on account overview, notifications, offline access, and support requests. The goal is to reduce the time customers spend finding routine account information and to validate whether offline access improves repeat usage.
+
+Engineering will build the pilot in React Native with TypeScript. Product will define the first release scope by September 18. Design will deliver the final interaction states by September 22. The engineering team will complete the first internal build by October 10.
+
+The pilot will be considered successful if at least 60 percent of invited users complete three core tasks without support and weekly returning usage reaches 35 percent. The team agreed not to include payments or live chat in the pilot because both would expand the security and backend scope.
+
+Key risks are delayed API access, incomplete analytics events, and inconsistent offline data. The team will review these risks twice each week during implementation.
