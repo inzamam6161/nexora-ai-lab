@@ -260,7 +260,11 @@ export default function Dashboard({ onNavigate }: Props) {
             const Icon = tool.icon;
 
             return (
-              <article className="tool-card" key={tool.id}>
+              <article
+                className="tool-card"
+                data-tool={tool.id}
+                key={tool.id}
+              >
                 <div className="tool-card__icon">
                   <Icon size={24} />
                 </div>
