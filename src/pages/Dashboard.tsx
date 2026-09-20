@@ -1,10 +1,15 @@
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
   BrainCircuit,
-  CheckCircle2,
-  Lightbulb,
+  FileText,
+  Image,
+  ShieldCheck,
   Sparkles,
+  TableProperties,
   Workflow,
+  Zap,
+  type LucideIcon,
 } from "lucide-react";
 import { tools } from "../data/tools";
 import type { ToolRoute } from "../app/toolRegistry";
@@ -13,178 +18,305 @@ type Props = {
   onNavigate: (tool: ToolRoute) => void;
 };
 
+type Filter = "all" | "data" | "documents" | "productivity" | "media";
+
+type CategoryMeta = {
+  label: string;
+  badge: string;
+  icon: LucideIcon;
+};
+
+const CATEGORY_META: Record<Exclude<Filter, "all">, CategoryMeta> = {
+  data: {
+    label: "Data",
+    badge: "DATA",
+    icon: TableProperties,
+  },
+  documents: {
+    label: "Documents",
+    badge: "DOCUMENTS",
+    icon: FileText,
+  },
+  productivity: {
+    label: "Productivity",
+    badge: "PRODUCTIVITY",
+    icon: Workflow,
+  },
+  media: {
+    label: "Media",
+    badge: "MEDIA",
+    icon: Image,
+  },
+};
+
+const TOOL_CATEGORIES: Record<string, Exclude<Filter, "all">> = {
+  "data-analyst": "data",
+  "dataset-cleaner": "data",
+  "data-qa": "data",
+  "expense-intelligence": "data",
+  "document-intelligence": "documents",
+  "resume-analyzer": "documents",
+  "meeting-intelligence": "productivity",
+  "log-analyzer": "productivity",
+  "social-post-studio": "media",
+};
+
 export default function Dashboard({ onNavigate }: Props) {
-  const open = (id: string) => onNavigate(id as ToolRoute);
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const filteredTools = useMemo(
+    () =>
+      filter === "all"
+        ? tools
+        : tools.filter(
+            (tool) => TOOL_CATEGORIES[tool.id] === filter
+          ),
+    [filter]
+  );
+
+  const quickExamples = [
+    {
+      title: "Sales analysis",
+      subtitle: "CSV → Trends → Anomalies",
+      tool: "data-analyst" as ToolRoute,
+      icon: TableProperties,
+    },
+    {
+      title: "Resume match",
+      subtitle: "Resume + Job → Skill gaps",
+      tool: "resume-analyzer" as ToolRoute,
+      icon: FileText,
+    },
+    {
+      title: "Social post",
+      subtitle: "Image → Analysis → Export",
+      tool: "social-post-studio" as ToolRoute,
+      icon: Image,
+    },
+  ];
 
   return (
-    <section className="nexora-home nexora-home--final">
-      <div className="nexora-home__stars" />
+    <section className="dashboard">
+      <section className="hero">
+        <div className="hero__content">
+          <span className="eyebrow">LOCAL-FIRST INTELLIGENCE</span>
 
-      <header className="nexora-topbar">
-        <button
-          className="nexora-brand"
-          onClick={() => onNavigate("dashboard")}
-        >
-          <span className="nexora-brand__mark">
-            <BrainCircuit size={22} />
-          </span>
-          <span>
-            <strong>Nexora AI Lab</strong>
-            <small>Analyze · Understand · Create</small>
-          </span>
-        </button>
-
-        <nav>
-          <button className="is-active">Home</button>
-          <button onClick={() => open("data-analyst")}>Workspace</button>
-        </nav>
-
-        <div className="nexora-topbar__actions">
-          <button
-            className="open-workspace"
-            onClick={() => open("data-analyst")}
-          >
-            Open Workspace <ArrowRight size={15} />
-          </button>
-        </div>
-      </header>
-
-      <div className="nexora-stage">
-        <section className="nexora-intro nexora-intro--final">
-          <span className="eyebrow">
-            LOCAL-FIRST INTELLIGENCE. REAL-WORLD VALUE.
-          </span>
           <h1>
-            What will you <em>explore</em> today?
-          </h1>
-          <p>
-            Nine practical intelligence tools. One workspace.
+            Turn information
             <br />
-            Turn information into clarity with transparent browser-side
-            processing.
+            into <span>insight.</span>
+          </h1>
+
+          <p className="hero__lead">
+            Analyze data, documents, expenses, logs and images
+            directly in your browser. Nine practical tools, one
+            workspace.
           </p>
 
-          <div className="nexora-principles">
-            <span>◈ Private & Local</span>
-            <span>ϟ Transparent Analysis</span>
-            <span>◇ Built for Real Work</span>
+          <div className="hero__features">
+            <div className="hero__feature">
+              <ShieldCheck size={18} />
+              <div>
+                <strong>Private & Local</strong>
+                <small>Your data stays in your browser.</small>
+              </div>
+            </div>
+
+            <div className="hero__feature">
+              <Zap size={18} />
+              <div>
+                <strong>No Paid API</strong>
+                <small>Browser-first processing.</small>
+              </div>
+            </div>
+
+            <div className="hero__feature">
+              <BrainCircuit size={18} />
+              <div>
+                <strong>Built for Real Work</strong>
+                <small>Practical tools, clear outputs.</small>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
 
-        <div className="capability-map capability-map--final">
-          <div className="capability-map__rings" />
-
-          <div className="nexora-core nexora-core--final">
-            <span className="nexora-core__icon">
-              <BrainCircuit size={54} />
+        <div className="hero__command">
+          <div className="hero__command-head">
+            <span className="hero__command-mark">
+              <Sparkles size={18} />
             </span>
-            <strong>NEXORA AI</strong>
-            <small>LOCAL · DATA · ACTION</small>
-            <em>
-              Practical tools.
-              <br />
-              Clear outputs.
-            </em>
+
+            <div>
+              <h3>Ask Nexora</h3>
+              <p>What would you like to work with today?</p>
+            </div>
           </div>
 
-          {tools.map((tool, index) => {
-            const Icon = tool.icon;
+          <button
+            className="command-input"
+            onClick={() => onNavigate("data-qa")}
+          >
+            <span>
+              Ask a question about your data, documents, or ideas...
+            </span>
+            <ArrowRight size={18} />
+          </button>
+
+          <div className="command-chips">
+            <button onClick={() => onNavigate("data-analyst")}>
+              Analyze my sales data
+            </button>
+            <button onClick={() => onNavigate("dataset-cleaner")}>
+              Clean this dataset
+            </button>
+            <button onClick={() => onNavigate("resume-analyzer")}>
+              Check my resume
+            </button>
+            <button
+              onClick={() => onNavigate("document-intelligence")}
+            >
+              Summarize a document
+            </button>
+            <button
+              onClick={() => onNavigate("social-post-studio")}
+            >
+              Prepare a social post
+            </button>
+          </div>
+
+          <div className="status-pills">
+            <span>Runs locally in your browser</span>
+            <span>React + TypeScript</span>
+            <span>Portfolio build</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="quick-examples">
+        <div className="section-header">
+          <div>
+            <span className="eyebrow">QUICK EXAMPLES</span>
+            <h2>Start with a proven workflow</h2>
+          </div>
+        </div>
+
+        <div className="quick-examples__grid">
+          {quickExamples.map((item) => {
+            const Icon = item.icon;
 
             return (
               <button
-                key={tool.id}
-                className={`orbit-tool orbit-tool--${index + 1}`}
-                onClick={() => open(tool.id)}
+                key={item.title}
+                className="quick-card"
+                onClick={() => onNavigate(item.tool)}
               >
-                <span className="orbit-tool__icon">
-                  <Icon size={22} />
+                <span className="quick-card__icon">
+                  <Icon size={18} />
                 </span>
-                <span>
-                  <strong>{tool.title}</strong>
-                  <small>{tool.shortDescription}</small>
-                </span>
-                <ArrowRight className="orbit-tool__arrow" size={14} />
+
+                <div className="quick-card__copy">
+                  <strong>{item.title}</strong>
+                  <small>{item.subtitle}</small>
+                </div>
+
+                <ArrowRight size={16} />
               </button>
             );
           })}
         </div>
+      </section>
 
-        <aside className="nexora-sidecards nexora-sidecards--final">
-          <section>
-            <div className="sidecard-title">
-              <Workflow size={15} />
-              <strong>Example workflows</strong>
-            </div>
-            <button onClick={() => open("data-analyst")}>
-              Sales dataset → trends & anomalies <ArrowRight size={12} />
-            </button>
-            <button onClick={() => open("resume-analyzer")}>
-              Resume + role → skill overlap <ArrowRight size={12} />
-            </button>
-            <button onClick={() => open("meeting-intelligence")}>
-              Meeting notes → decisions & actions <ArrowRight size={12} />
-            </button>
-            <button onClick={() => open("social-post-studio")}>
-              Photo → local image treatment <ArrowRight size={12} />
-            </button>
-          </section>
-
-          <section>
-            <div className="sidecard-title">
-              <Lightbulb size={15} />
-              <strong>Ideas for you</strong>
-            </div>
-            <button onClick={() => open("data-analyst")}>
-              “Analyze my sales data” <ArrowRight size={12} />
-            </button>
-            <button onClick={() => open("dataset-cleaner")}>
-              “Clean this messy dataset” <ArrowRight size={12} />
-            </button>
-            <button onClick={() => open("log-analyzer")}>
-              “Find repeated app errors” <ArrowRight size={12} />
-            </button>
-            <button onClick={() => open("social-post-studio")}>
-              “Prepare a social post” <ArrowRight size={12} />
-            </button>
-          </section>
-        </aside>
-
-        <div className="nexora-dock">
-          <div className="nexora-command">
-            <Sparkles size={16} />
-            <span>Ask a question about your data...</span>
-            <button
-              aria-label="Open Data Q&A"
-              onClick={() => open("data-qa")}
-            >
-              <ArrowRight size={18} />
-            </button>
+      <section className="tools-section">
+        <div className="section-header section-header--split">
+          <div>
+            <h2>Explore Our Tools</h2>
+            <p>
+              Nine practical tools for real-world tasks. All
+              processed locally in your browser.
+            </p>
           </div>
 
-          <div className="nexora-quick">
-            <button onClick={() => open("data-analyst")}>
-              Analyze my data
-            </button>
-            <button onClick={() => open("document-intelligence")}>
-              Summarize text
-            </button>
-            <button onClick={() => open("resume-analyzer")}>
-              Check my resume
-            </button>
-            <button onClick={() => open("expense-intelligence")}>
-              Understand expenses
-            </button>
-            <button onClick={() => open("social-post-studio")}>
-              Prepare a social post
-            </button>
+          <div className="filter-bar">
+            {(["all", "data", "documents", "productivity", "media"] as const).map(
+              (item) => (
+                <button
+                  key={item}
+                  className={filter === item ? "is-active" : ""}
+                  onClick={() => setFilter(item)}
+                >
+                  {item === "all"
+                    ? "All Tools"
+                    : CATEGORY_META[item].label}
+                </button>
+              )
+            )}
           </div>
         </div>
 
-        <div className="nexora-status">
-          <CheckCircle2 size={12} /> Local engines ready
-          <span>Portfolio build</span>
+        <div className="tool-grid">
+          {filteredTools.map((tool) => {
+            const category = TOOL_CATEGORIES[tool.id];
+            const meta = CATEGORY_META[category];
+            const Icon = tool.icon;
+
+            return (
+              <article className="tool-card" key={tool.id}>
+                <div className="tool-card__icon">
+                  <Icon size={24} />
+                </div>
+
+                <div className="tool-card__body">
+                  <div className="tool-card__head">
+                    <h3>{tool.title}</h3>
+                    <span className="tool-tag">{meta.badge}</span>
+                  </div>
+
+                  <p>{tool.shortDescription}</p>
+
+                  <div className="tool-card__footer">
+                    <span className="tool-card__meta">
+                      <meta.icon size={14} />
+                      {meta.label}
+                    </span>
+
+                    <button
+                      className="tool-card__open"
+                      onClick={() =>
+                        onNavigate(tool.id as ToolRoute)
+                      }
+                    >
+                      Open
+                      <ArrowRight size={15} />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
-      </div>
+      </section>
+
+      <footer className="dashboard-footer">
+        <div className="dashboard-footer__brand">
+          <BrainCircuit size={18} />
+          <div>
+            <strong>Nexora AI Lab</strong>
+            <small>Local • Private • Practical</small>
+          </div>
+        </div>
+
+        <div className="dashboard-footer__links">
+          <button onClick={() => onNavigate("document-intelligence")}>
+            Documentation
+          </button>
+          <button onClick={() => onNavigate("data-qa")}>
+            Ask Nexora
+          </button>
+          <button onClick={() => onNavigate("data-analyst")}>
+            Workspace
+          </button>
+        </div>
+      </footer>
     </section>
   );
 }

@@ -1,3 +1,450 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Nexora AI Lab — Design 1 theme across the whole project
+# Run from the root of the nexora-ai-lab repository:
+#   bash apply-nexora-design1-theme.sh
+
+if [[ ! -f "package.json" ]] || ! grep -q '"name": "nexora-ai-lab"' package.json; then
+  echo "Error: run this script from the root of the nexora-ai-lab repository."
+  exit 1
+fi
+
+echo "==> Applying Nexora Design 1 theme across the project"
+
+mkdir -p src/components/layout src/pages src
+
+cat > src/components/layout/AppShell.tsx <<'EOF'
+import type { ReactNode } from "react";
+import {
+  BrainCircuit,
+  Home,
+  LayoutGrid,
+  Sparkles,
+} from "lucide-react";
+import { tools } from "../../data/tools";
+import type { ToolRoute } from "../../app/toolRegistry";
+
+type Props = {
+  children: ReactNode;
+  activeTool: ToolRoute;
+  onNavigate: (tool: ToolRoute) => void;
+};
+
+export default function AppShell({
+  children,
+  activeTool,
+  onNavigate,
+}: Props) {
+  const isHome = activeTool === "dashboard";
+
+  return (
+    <div className={`shell ${isHome ? "shell--home" : "shell--tool"}`}>
+      <div className="shell__ambient shell__ambient--one" />
+      <div className="shell__ambient shell__ambient--two" />
+
+      <header className="shell__header">
+        <button
+          className="shell__brand"
+          onClick={() => onNavigate("dashboard")}
+        >
+          <span className="shell__brand-icon">
+            <BrainCircuit size={22} />
+          </span>
+
+          <span className="shell__brand-copy">
+            <strong>Nexora AI Lab</strong>
+            <small>Local Intelligence Workspace</small>
+          </span>
+        </button>
+
+        <nav className="shell__nav">
+          <button
+            className={isHome ? "is-active" : ""}
+            onClick={() => onNavigate("dashboard")}
+          >
+            <Home size={15} />
+            Home
+          </button>
+
+          <button
+            className={!isHome ? "is-active" : ""}
+            onClick={() => onNavigate("data-analyst")}
+          >
+            <LayoutGrid size={15} />
+            Workspace
+          </button>
+
+          <button onClick={() => onNavigate("data-qa")}>
+            <Sparkles size={15} />
+            Ask Nexora
+          </button>
+        </nav>
+
+        <button
+          className="shell__cta"
+          onClick={() =>
+            onNavigate(isHome ? "data-analyst" : "dashboard")
+          }
+        >
+          {isHome ? "Open Workspace" : "Back Home"}
+        </button>
+      </header>
+
+      {!isHome && (
+        <div className="shell__subnav">
+          {tools.map((tool) => {
+            const Icon = tool.icon;
+
+            return (
+              <button
+                key={tool.id}
+                className={activeTool === tool.id ? "is-current" : ""}
+                onClick={() => onNavigate(tool.id as ToolRoute)}
+              >
+                <Icon size={14} />
+                <span>{tool.title}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <main className="shell__content">{children}</main>
+    </div>
+  );
+}
+EOF
+
+cat > src/pages/Dashboard.tsx <<'EOF'
+import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  BrainCircuit,
+  CircleDollarSign,
+  FileText,
+  Image,
+  MessageSquareText,
+  ShieldCheck,
+  Sparkles,
+  TableProperties,
+  TerminalSquare,
+  Workflow,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+import { tools } from "../data/tools";
+import type { ToolRoute } from "../app/toolRegistry";
+
+type Props = {
+  onNavigate: (tool: ToolRoute) => void;
+};
+
+type Filter = "all" | "data" | "documents" | "productivity" | "media";
+
+type CategoryMeta = {
+  label: string;
+  badge: string;
+  icon: LucideIcon;
+};
+
+const CATEGORY_META: Record<Exclude<Filter, "all">, CategoryMeta> = {
+  data: {
+    label: "Data",
+    badge: "DATA",
+    icon: TableProperties,
+  },
+  documents: {
+    label: "Documents",
+    badge: "DOCUMENTS",
+    icon: FileText,
+  },
+  productivity: {
+    label: "Productivity",
+    badge: "PRODUCTIVITY",
+    icon: Workflow,
+  },
+  media: {
+    label: "Media",
+    badge: "MEDIA",
+    icon: Image,
+  },
+};
+
+const TOOL_CATEGORIES: Record<string, Exclude<Filter, "all">> = {
+  "data-analyst": "data",
+  "dataset-cleaner": "data",
+  "data-qa": "data",
+  "expense-intelligence": "data",
+  "document-intelligence": "documents",
+  "resume-analyzer": "documents",
+  "meeting-intelligence": "productivity",
+  "log-analyzer": "productivity",
+  "social-post-studio": "media",
+};
+
+export default function Dashboard({ onNavigate }: Props) {
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const filteredTools = useMemo(
+    () =>
+      filter === "all"
+        ? tools
+        : tools.filter(
+            (tool) => TOOL_CATEGORIES[tool.id] === filter
+          ),
+    [filter]
+  );
+
+  const quickExamples = [
+    {
+      title: "Sales analysis",
+      subtitle: "CSV → Trends → Anomalies",
+      tool: "data-analyst" as ToolRoute,
+      icon: TableProperties,
+    },
+    {
+      title: "Resume match",
+      subtitle: "Resume + Job → Skill gaps",
+      tool: "resume-analyzer" as ToolRoute,
+      icon: FileText,
+    },
+    {
+      title: "Social post",
+      subtitle: "Image → Analysis → Export",
+      tool: "social-post-studio" as ToolRoute,
+      icon: Image,
+    },
+  ];
+
+  return (
+    <section className="dashboard">
+      <section className="hero">
+        <div className="hero__content">
+          <span className="eyebrow">LOCAL-FIRST INTELLIGENCE</span>
+
+          <h1>
+            Turn information
+            <br />
+            into <span>insight.</span>
+          </h1>
+
+          <p className="hero__lead">
+            Analyze data, documents, expenses, logs and images
+            directly in your browser. Nine practical tools, one
+            workspace.
+          </p>
+
+          <div className="hero__features">
+            <div className="hero__feature">
+              <ShieldCheck size={18} />
+              <div>
+                <strong>Private & Local</strong>
+                <small>Your data stays in your browser.</small>
+              </div>
+            </div>
+
+            <div className="hero__feature">
+              <Zap size={18} />
+              <div>
+                <strong>No Paid API</strong>
+                <small>Browser-first processing.</small>
+              </div>
+            </div>
+
+            <div className="hero__feature">
+              <BrainCircuit size={18} />
+              <div>
+                <strong>Built for Real Work</strong>
+                <small>Practical tools, clear outputs.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hero__command">
+          <div className="hero__command-head">
+            <span className="hero__command-mark">
+              <Sparkles size={18} />
+            </span>
+
+            <div>
+              <h3>Ask Nexora</h3>
+              <p>What would you like to work with today?</p>
+            </div>
+          </div>
+
+          <button
+            className="command-input"
+            onClick={() => onNavigate("data-qa")}
+          >
+            <span>
+              Ask a question about your data, documents, or ideas...
+            </span>
+            <ArrowRight size={18} />
+          </button>
+
+          <div className="command-chips">
+            <button onClick={() => onNavigate("data-analyst")}>
+              Analyze my sales data
+            </button>
+            <button onClick={() => onNavigate("dataset-cleaner")}>
+              Clean this dataset
+            </button>
+            <button onClick={() => onNavigate("resume-analyzer")}>
+              Check my resume
+            </button>
+            <button
+              onClick={() => onNavigate("document-intelligence")}
+            >
+              Summarize a document
+            </button>
+            <button
+              onClick={() => onNavigate("social-post-studio")}
+            >
+              Prepare a social post
+            </button>
+          </div>
+
+          <div className="status-pills">
+            <span>Runs locally in your browser</span>
+            <span>React + TypeScript</span>
+            <span>Portfolio build</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="quick-examples">
+        <div className="section-header">
+          <div>
+            <span className="eyebrow">QUICK EXAMPLES</span>
+            <h2>Start with a proven workflow</h2>
+          </div>
+        </div>
+
+        <div className="quick-examples__grid">
+          {quickExamples.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <button
+                key={item.title}
+                className="quick-card"
+                onClick={() => onNavigate(item.tool)}
+              >
+                <span className="quick-card__icon">
+                  <Icon size={18} />
+                </span>
+
+                <div className="quick-card__copy">
+                  <strong>{item.title}</strong>
+                  <small>{item.subtitle}</small>
+                </div>
+
+                <ArrowRight size={16} />
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="tools-section">
+        <div className="section-header section-header--split">
+          <div>
+            <h2>Explore Our Tools</h2>
+            <p>
+              Nine practical tools for real-world tasks. All
+              processed locally in your browser.
+            </p>
+          </div>
+
+          <div className="filter-bar">
+            {(["all", "data", "documents", "productivity", "media"] as const).map(
+              (item) => (
+                <button
+                  key={item}
+                  className={filter === item ? "is-active" : ""}
+                  onClick={() => setFilter(item)}
+                >
+                  {item === "all"
+                    ? "All Tools"
+                    : CATEGORY_META[item].label}
+                </button>
+              )
+            )}
+          </div>
+        </div>
+
+        <div className="tool-grid">
+          {filteredTools.map((tool) => {
+            const category = TOOL_CATEGORIES[tool.id];
+            const meta = CATEGORY_META[category];
+            const Icon = tool.icon;
+
+            return (
+              <article className="tool-card" key={tool.id}>
+                <div className="tool-card__icon">
+                  <Icon size={24} />
+                </div>
+
+                <div className="tool-card__body">
+                  <div className="tool-card__head">
+                    <h3>{tool.title}</h3>
+                    <span className="tool-tag">{meta.badge}</span>
+                  </div>
+
+                  <p>{tool.shortDescription}</p>
+
+                  <div className="tool-card__footer">
+                    <span className="tool-card__meta">
+                      <meta.icon size={14} />
+                      {meta.label}
+                    </span>
+
+                    <button
+                      className="tool-card__open"
+                      onClick={() =>
+                        onNavigate(tool.id as ToolRoute)
+                      }
+                    >
+                      Open
+                      <ArrowRight size={15} />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <footer className="dashboard-footer">
+        <div className="dashboard-footer__brand">
+          <BrainCircuit size={18} />
+          <div>
+            <strong>Nexora AI Lab</strong>
+            <small>Local • Private • Practical</small>
+          </div>
+        </div>
+
+        <div className="dashboard-footer__links">
+          <button onClick={() => onNavigate("document-intelligence")}>
+            Documentation
+          </button>
+          <button onClick={() => onNavigate("data-qa")}>
+            Ask Nexora
+          </button>
+          <button onClick={() => onNavigate("data-analyst")}>
+            Workspace
+          </button>
+        </div>
+      </footer>
+    </section>
+  );
+}
+EOF
+
+cat > src/index.css <<'EOF'
 :root {
   --bg: #07101f;
   --bg-soft: #0a1428;
@@ -1065,3 +1512,27 @@ td {
     align-items: flex-start;
   }
 }
+EOF
+
+echo "==> Running lint"
+npm run lint
+
+echo "==> Running tests"
+npm test
+
+echo "==> Running production build"
+npm run build
+
+echo
+echo "============================================================"
+echo "Nexora Design 1 theme has been applied."
+echo
+echo "Next:"
+echo "  git status"
+echo "  git diff"
+echo
+echo "If everything looks good:"
+echo '  git add -A'
+echo '  git commit -m "Apply Design 1 theme across Nexora project"'
+echo '  git push'
+echo "============================================================"
