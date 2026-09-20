@@ -1,0 +1,9 @@
+2026-09-20T09:12:02Z WARN Network request retry scheduled for /api/profile
+2026-09-20T09:12:03Z ERROR Request failed with status 503 for /api/profile
+2026-09-20T09:12:05Z ERROR Request failed with status 503 for /api/profile
+2026-09-20T09:12:09Z WARN Network request retry scheduled for /api/profile
+2026-09-20T09:14:21Z ERROR TypeError: Cannot read properties of undefined at Dashboard.tsx:184
+2026-09-20T09:15:02Z ERROR Request failed with status 503 for /api/profile
+2026-09-20T09:18:33Z WARN Image decode took 840ms for dashboard-preview.png
+2026-09-20T09:19:10Z ERROR TypeError: Cannot read properties of undefined at Dashboard.tsx:205
+2026-09-20T09:20:42Z INFO User returned to dashboard

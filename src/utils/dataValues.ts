@@ -54,7 +54,7 @@ export function parseNumericValue(
         ""
       )
       .replace(
-        /^[\$€£₹]\s*/,
+        /^[$€£₹]\s*/,
         ""
       )
       .replace(

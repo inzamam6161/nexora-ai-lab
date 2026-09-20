@@ -25,7 +25,7 @@ export default function IntelligencePage({ mode, onBack }: Props) {
       "document-intelligence": ["/examples/project-proposal.txt"],
       "resume-analyzer": ["/examples/sample-resume.txt", "/examples/mobile-engineer-job.txt"],
       "meeting-intelligence": ["/examples/product-meeting.txt"],
-      "log-analyzer": ["/examples/application-errors.log"],
+      "log-analyzer": ["/examples/application-errors.txt"],
     };
     const [firstPath, secondPath] = files[mode];
     const firstText = await fetch(firstPath).then(r => r.text());

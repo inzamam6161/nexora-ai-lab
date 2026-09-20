@@ -1,42 +1,211 @@
 # Nexora AI Lab
 
-Nexora AI Lab is a local-first collection of small intelligence tools built with React and TypeScript. I made it as a portfolio project to explore how far useful analysis can go with transparent rules and browser-side processing instead of paid AI APIs.
+**Local-first browser intelligence toolkit built with React and TypeScript.**
 
-## What is included
+Nexora AI Lab is a portfolio project exploring how useful analysis can be built with transparent rules, browser-side processing, and focused domain engines instead of depending on paid AI APIs for every feature.
 
-- **AI Data Analyst** — profiles CSV/XLSX files, calculates statistics, finds anomalies and trends, generates insights, and recommends charts.
-- **Dataset Cleaner** — removes exact duplicate rows, trims text values, reports missing cells, and exports a cleaned CSV.
-- **Data Q&A** — turns a focused plain-English question into filters and aggregations, then shows the answer and reasoning.
-- **Document Intelligence** — summarizes pasted text and surfaces recurring terms and document shape.
-- **Resume ↔ Job Analyzer** — compares detected technical skills in a resume and job description.
-- **Expense Intelligence** — finds likely amount/category fields and builds a local spending breakdown.
-- **Meeting Intelligence** — extracts a short summary, explicit decisions, action-like sentences, and common topics.
-- **Developer Log Analyzer** — groups recurring warning/error patterns from pasted logs.
-- **Social Post Studio** — locally crops a photo to 4:5, adjusts brightness/contrast/saturation, and exports a 1080×1350 PNG.
+**Live demo:** https://nexora-ai-lab-psi.vercel.app/
+
+## Why I built it
+
+The goal is not to label every calculation as generative AI. Nexora separates deterministic analysis from capabilities that would genuinely require a model.
+
+The project demonstrates:
+
+- data profiling, statistics, trends, anomalies, and chart recommendations,
+- natural-language-style dataset filtering and aggregation,
+- document, meeting, resume, and log analysis,
+- local spreadsheet processing,
+- browser-side image measurements and export,
+- reusable React/TypeScript architecture,
+- privacy-conscious local processing,
+- example-driven UX so every tool can be tested immediately.
+
+## Tools
+
+| Tool | What it does |
+| --- | --- |
+| **Data Analyst** | Profiles CSV/XLSX data and produces statistics, trends, anomalies, insights, and chart recommendations |
+| **Dataset Cleaner** | Finds common data-quality problems and exports a cleaned CSV |
+| **Data Q&A** | Converts focused plain-English dataset questions into filters, comparisons, and aggregations |
+| **Document Intelligence** | Summarizes pasted or already-extracted text and surfaces key terms/document shape |
+| **Resume ↔ Job Analyzer** | Compares detected technical skills in a resume and job description |
+| **Expense Intelligence** | Detects likely amount/category fields and builds a local spending breakdown |
+| **Meeting Intelligence** | Extracts a compact summary, explicit decisions, action-like sentences, and topics |
+| **Developer Log Analyzer** | Groups repeated warning/error patterns from application logs |
+| **Social Post Studio** | Measures an image locally, adjusts presentation, crops, exports, and prepares context-assisted post copy |
+
+## Architecture
+
+```text
+React UI
+   │
+   ├── Shared workspace components
+   │
+   ├── Tool pages
+   │
+   └── Local example inputs
+           │
+           ▼
+Focused processing engines
+   │
+   ├── Dataset profiler
+   ├── Statistics
+   ├── Anomaly detection
+   ├── Trend analysis
+   ├── Insight generation
+   ├── Chart recommendation
+   ├── Question / filter / aggregation parsing
+   ├── Text heuristics
+   └── Canvas image processing
+           │
+           ▼
+Transparent local result
+```
+
+### Data-analysis flow
+
+```text
+CSV / XLSX
+   ↓
+File parser
+   ↓
+Dataset profile
+   ↓
+Statistics / anomalies / trends
+   ↓
+Insights + chart recommendations
+   ↓
+React result views
+```
+
+### Data Q&A flow
+
+```text
+Dataset + focused question
+   ↓
+Question parser
+   ↓
+Filter / comparison / aggregation intent
+   ↓
+Deterministic query engine
+   ↓
+Answer + supporting reasoning
+```
+
+### Social Post Studio flow
+
+```text
+Photo
+   ↓
+Browser Canvas
+   ↓
+Brightness / contrast / saturation / temperature / palette
+   ↓
+User-adjustable treatment + crop
+   ↓
+Local image export
+```
+
+Pixel measurements do not pretend to identify arbitrary image subjects. Subject-specific copy uses the context entered by the user.
+
+## Privacy
+
+The current portfolio build is intentionally local-first.
+
+- Spreadsheet analysis happens in the browser.
+- Text intelligence runs locally in the browser.
+- Social Post Studio measures and processes images locally.
+- The current implementation does not require a paid AI API.
+- Uploaded portfolio-demo content is not intentionally sent to an application backend.
+
+Always inspect the deployed application and source before using it with genuinely sensitive production data.
+
+## Built-in examples
+
+Each capability includes example content so the tool can be evaluated without preparing files first.
+
+Examples include:
+
+- sales analysis CSV,
+- messy customer dataset,
+- monthly expenses,
+- sample resume and mobile-engineer job description,
+- product meeting notes,
+- project proposal text,
+- application error logs,
+- sample social image.
+
+The examples use the same processing paths as user-provided inputs.
 
 ## Stack
 
-React 19, TypeScript, Vite, SheetJS (`xlsx`) and Lucide icons. Spreadsheet and image processing happens in the browser.
+- React 19
+- TypeScript
+- Vite
+- SheetJS (`xlsx`)
+- Lucide icons
+- Browser Canvas APIs
+- Vitest
+- GitHub Actions
 
-## Run locally
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Production check:
+Quality checks:
 
 ```bash
+npm run lint
+npm test
 npm run build
 ```
 
-## Notes
+## Shareable tool routes
 
-This project intentionally avoids pretending deterministic rules are a generative model. The analysis tools expose calculations and reasoning where useful, and the photo editor is described as image processing rather than generative AI.
+Nexora uses dependency-free hash routing so individual tools can be linked directly while remaining simple to deploy on static hosting.
 
-PDF binary extraction is not bundled; Document Intelligence currently works from pasted/extracted text. This keeps the project dependency-light and fully local.
+Examples:
 
-## Built-in examples
+```text
+/#/tools/data-analyst
+/#/tools/data-qa
+/#/tools/resume-analyzer
+/#/tools/social-post-studio
+```
 
-Every tool has a small example so the project can be tested without preparing files first. Spreadsheet tools load bundled CSV data, the text tools load realistic sample documents/notes/logs, the resume analyzer loads both sides of a sample comparison, and Social Post Studio includes a local sample image. The examples go through the same processing paths as user-provided input.
+Browser Back/Forward navigation also works between tools.
+
+## Current limitations
+
+- Document Intelligence currently works with pasted or pre-extracted text; PDF binary extraction is not bundled.
+- The text-intelligence tools use deterministic heuristics rather than a generative LLM.
+- Data Q&A intentionally supports focused analytical questions rather than unrestricted natural-language reasoning.
+- Social Post Studio uses pixel statistics plus user context; it does not perform general computer-vision object recognition.
+- This is a portfolio engineering build rather than a production SaaS service.
+
+## Engineering choices
+
+A few deliberate decisions:
+
+- **Transparent processing over fake AI claims.** Calculations and heuristics remain identifiable as calculations and heuristics.
+- **Local-first by default.** The current tools work without sending files to a paid model endpoint.
+- **Small focused engines.** Profiling, statistics, anomalies, trends, filtering, aggregation, and presentation are separated.
+- **Examples use real paths.** Demo inputs go through the same code paths as uploaded/pasted content.
+- **Shareable routes without deployment complexity.** Hash routing keeps static Vercel hosting straightforward.
+- **Test core calculations.** Deterministic analysis logic is a good fit for automated unit testing.
+
+## Repository usage
+
+This repository is published primarily as a portfolio and engineering case study. No explicit open-source license is currently granted. Contact the author before reusing substantial portions of the source.
+
+## Author
+
+**Inzamamul Haque**  
+Senior Mobile Engineer / React Native Engineer
+
+- Portfolio: https://inzamam-dev.vercel.app/
+- GitHub: https://github.com/inzamam6161

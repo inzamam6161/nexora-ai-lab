@@ -92,15 +92,10 @@ function InsightCard({
 }: {
   insight: GeneratedInsight;
 }) {
-  const Icon =
-    getInsightIcon(
-      insight
-    );
-
   return (
     <article className="insight-card">
       <div className="insight-card__icon">
-        <Icon size={16} />
+        <InsightIcon insight={insight} />
       </div>
 
       <div className="insight-card__content">
@@ -164,36 +159,26 @@ function SummaryMetric({
   );
 }
 
-function getInsightIcon(
-  insight: GeneratedInsight
-) {
-  if (
-    insight.type ===
-    "anomaly"
-  ) {
-    return AlertTriangle;
+function InsightIcon({
+  insight,
+}: {
+  insight: GeneratedInsight;
+}) {
+  if (insight.type === "anomaly") {
+    return <AlertTriangle size={16} />;
   }
 
-  if (
-    insight.type ===
-    "trend"
-  ) {
-    return TrendingUp;
+  if (insight.type === "trend") {
+    return <TrendingUp size={16} />;
   }
 
-  if (
-    insight.type ===
-    "quality"
-  ) {
-    return CheckCircle2;
+  if (insight.type === "quality") {
+    return <CheckCircle2 size={16} />;
   }
 
-  if (
-    insight.type ===
-    "statistics"
-  ) {
-    return BarChart3;
+  if (insight.type === "statistics") {
+    return <BarChart3 size={16} />;
   }
 
-  return Lightbulb;
+  return <Lightbulb size={16} />;
 }

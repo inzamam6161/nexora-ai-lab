@@ -24,7 +24,7 @@ export type ToolDefinition = {
 export const tools: ToolDefinition[] = [
   {
     id: "data-analyst",
-    title: "AI Data Analyst",
+    title: "Data Analyst",
     shortDescription:
       "Turn spreadsheets into useful business insights.",
     input: [
@@ -78,7 +78,7 @@ export const tools: ToolDefinition[] = [
     shortDescription:
       "Extract the important information from documents.",
     input: [
-      "PDF or text document",
+      "Pasted or extracted document text",
     ],
     output: [
       "Summary",
